@@ -1,0 +1,16 @@
+{
+  "name": "filefly",
+  "description": "All CDN upload in one SDK",
+  "scripts": {
+    "dev": "tsc --watch",
+    "test": "jest",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "ali-oss": "^6.2.0"
+  }
+}
