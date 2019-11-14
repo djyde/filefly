@@ -1,4 +1,4 @@
-const Aliyun = require('../lib/aliyun').default
+const { Aliyun } = require('../lib')
 const path = require('path')
 
 const aliyun = new Aliyun(process.env.TEST_ALIYUN_ID, process.env.TEST_ALIYUN_SECRET, {
