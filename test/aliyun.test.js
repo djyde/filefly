@@ -6,7 +6,7 @@ const aliyun = new Aliyun(process.env.TEST_ALIYUN_ID, process.env.TEST_ALIYUN_SE
   region: 'oss-cn-shenzhen'
 })
 
-test('aliyun upload', async () => {
+test('aliyun upload to bucket directly', async () => {
   const result = await aliyun.uploadToBucket(path.resolve(__dirname, './demo.jpg'), {
     bucketPath: 'test',
     customDomain: 'https://assets.djyde.com'

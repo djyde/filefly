@@ -1,6 +1,7 @@
 import * as OSS from 'ali-oss'
 import * as path from 'path'
 import * as fs from 'fs'
+import * as inquirer from 'inquirer'
 
 export type Bucket = {
   name: string,
@@ -10,6 +11,7 @@ export type Bucket = {
 export type AliyunOptions = {
   bucketName: string,
   region: string,
+  customDomains?: string[]
 }
 
 export default class Aliyun {
@@ -17,7 +19,7 @@ export default class Aliyun {
   private bucketClient
   private ossClient
 
-  constructor (private id: string, private secret: string, private options?: AliyunOptions) {
+  constructor(private id: string, private secret: string, private options?: AliyunOptions) {
 
     this.ossClient = new OSS({
       accessKeyId: this.id,
@@ -29,22 +31,64 @@ export default class Aliyun {
     }
   }
 
-  private setBucketClient (region: string, bucket: string) {
+  private setBucketClient(region: string, bucket: string) {
     this.bucketClient = new OSS({
       accessKeyId: this.id,
       accessKeySecret: this.secret,
       region,
       bucket,
-    }) 
+    })
   }
 
   async listBuckets() {
-    return await this.ossClient.listBuckets() as Bucket[]
+    return (await this.ossClient.listBuckets()).buckets as Bucket[]
   }
 
-  async upload () {
+  async upload(filePath: string) {
     const buckets = await this.listBuckets()
-    console.log(buckets)
+    const answer: {
+      bucket: {
+        name: string,
+        region: string
+      },
+      customDomain: string,
+      bucketPath: string
+    } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'bucket',
+        message: 'Choose your bucket',
+        choices: buckets.map(bucket => {
+          return {
+            name: bucket.name,
+            value: bucket
+          }
+        })
+      },
+      {
+        type: this.options?.customDomains?.length ? 'list' : 'input',
+        name: 'customDomain',
+        message: 'custom domain for CDN',
+        choices: this.options?.customDomains ? this.options.customDomains.map(domain => ({
+          name: domain,
+          value: domain,
+        })) : []
+      },
+      {
+        type: 'input',
+        name: 'bucketPath',
+        message: 'bucket path'
+      }
+    ])
+
+    const { bucket, customDomain, bucketPath } = answer
+
+    this.setBucketClient(bucket.region, bucket.name)
+
+    return this.uploadToBucket(filePath, {
+      bucketPath,
+      customDomain
+    })
   }
 
   async uploadToBucket(filePath: string, options?: {
