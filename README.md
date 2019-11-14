@@ -1,14 +1,57 @@
 # Filefly
 
-Put all CDN/OSS upload in one SDK.
+All CDN/OSS upload providers in one command.
 
 ## Installation
 
 ```bash
-yarn add filefly
+# npm
+npm i -g filefly
+
+# yarn
+yarn global add filefly
 ```
 
-## Usage
+## Overview
+
+```bash
+# upload file to Aliyun OSS
+filefly aliyun demo.jpg
+
+# upload file to qiniu
+filefly qiniu demo.jpg
+
+# open config file
+filefly config
+```
+
+## Config
+
+Use `$ filefly config` to open the `config.json` folder:
+
+```json
+// config.json
+
+{
+	"aliyun": {
+		"accessKeyId": "",
+		"accessKeySecret": "",
+		"customDomains": [
+			"https://xxx.com",
+		]
+	}
+}
+```
+
+## Programmatic usage
+
+```bash
+# npm
+npm i filefly
+
+# yarn
+yarn add filefly
+```
 
 ### Aliyun
 
@@ -37,6 +80,12 @@ const { rawUrl, customUrl } = await aliyun.uploadToBucket(path.resolve(__dirname
   customDomain: 'https://assets.xxx.com'
 })
 ```
+
+## Roadmap
+
+- [x] Aliyun
+- [ ] qiniu
+- [ ] AWS S3
 
 # License
 
